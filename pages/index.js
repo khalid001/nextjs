@@ -58,7 +58,7 @@ const Home=() =>{
       <main className={styles.main}>
         <div className="input-group input-group-lg">
             <input type="text" className="form-control" placeholder="Enter URL" onChange={(e)=>handleInput1(e)} aria-label="Recipient's username" aria-describedby="basic-addon2"/>
-            <button type="button" class="btn btn-primary" onClick={encryptHandler}>Encrypt URL</button>
+            <button type="button" className="btn btn-primary" onClick={encryptHandler}>Encrypt URL</button>
         </div>  
         {showEncryptedURL ? 
           <div>
@@ -67,7 +67,7 @@ const Home=() =>{
           :null}
         <div className="input-group input-group-lg">
             <input type="text" className="form-control" placeholder="Enter encrypted URL" onChange={(e)=>handleInput2(e)} aria-label="Recipient's username" aria-describedby="basic-addon2"/>
-            <button type="button" class="btn btn-primary" onClick={decryptHandler}>Decrypt URL</button>
+            <button type="button" className="btn btn-primary" onClick={decryptHandler}>Decrypt URL</button>
         </div>  
         {showDecryptedURL ? 
           <div> 
