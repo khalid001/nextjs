@@ -1,52 +1,65 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-import React,{useState} from 'react'
+import Head from "next/head";
+import Image from "next/image";
+import styles from "../styles/Home.module.css";
+import React, { useState } from "react";
 
-const Home=() =>{
-  const [input1, setInput1]= useState("");
-  const [input2, setInput2]= useState(""); 
-  const [showEncryptedURL, setShowEncryptedURL]= useState(false);
-  const [showDecryptedURL, setShowDecryptedURL]= useState(false); 
-  const [encryptedURL, setEncryptedURL]= useState("");
-  const [decryptedURL, setDecryptedURL]= useState(""); 
-  const encryptUrl= "https://mcldmfoef5.execute-api.us-east-2.amazonaws.com/Test/encrypt/";
-  const decryptUrl= "https://mcldmfoef5.execute-api.us-east-2.amazonaws.com/Test/decrypt";
+const Home = () => {
+  const [input1, setInput1] = useState("");
+  const [input2, setInput2] = useState("");
+  const [encryptedURL, setEncryptedURL] = useState("");
+  const [decryptedURL, setDecryptedURL] = useState("");
+  const [isInvalid, setIsInvalid] = useState(false);
+  const encryptUrl =
+    "https://mcldmfoef5.execute-api.us-east-2.amazonaws.com/Test/encrypt";
+  const decryptUrl =
+    "https://mcldmfoef5.execute-api.us-east-2.amazonaws.com/Test/decrypt";
 
-  const encryptHandler=async ()=>{
-    const resp=await fetch(encryptUrl+input1);
-    resp.json().then(res=>{
-      setEncryptedURL(res.shortUrl)
-    })
-    .catch((error)=>{
-      console.error(error)
-    })
-    setShowEncryptedURL(true);
-  }
-
-  const decryptHandler=async ()=>{
-    var url = new URL(decryptUrl),
-    params = {shorturl:input2};
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+  const encryptHandler = async () => {
+    var url = new URL(encryptUrl),
+      params = { url: input1 };
+    Object.keys(params).forEach((key) =>
+      url.searchParams.append(key, params[key])
+    );
     const resp = await fetch(url);
-    resp.json().then(res=>{
-      setDecryptedURL(res.originalurl)
-    })
-    .catch((error)=>{
-      console.error(error)
-    })
-    setShowDecryptedURL(true);
-  }
+    resp
+      .json()
+      .then((res) => {
+        setEncryptedURL(res.shortUrl);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
-  const handleInput1=(e)=>{
-    setInput1(e.target.value); 
-    setShowEncryptedURL(false);
-  }
-  const handleInput2=(e)=>{
-    setInput2(e.target.value); 
-    setShowDecryptedURL(false);
-  }
+  const decryptHandler = async () => {
+    var url = new URL(decryptUrl),
+      params = { shorturl: input2 };
+    Object.keys(params).forEach((key) =>
+      url.searchParams.append(key, params[key])
+    );
+    const resp = await fetch(url);
+    resp
+      .json()
+      .then((res) => {
+        if (!res.originalurl) {
+          setIsInvalid(true);
+        }
+        setDecryptedURL(res.originalurl);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
+  const handleInput1 = (e) => {
+    setInput1(e.target.value);
+    setEncryptedURL("");
+  };
+  const handleInput2 = (e) => {
+    setInput2(e.target.value);
+    setDecryptedURL("");
+    setIsInvalid(false);
+  };
 
   return (
     <div className={styles.container}>
@@ -57,27 +70,54 @@ const Home=() =>{
 
       <main className={styles.main}>
         <div className="input-group input-group-lg">
-            <input type="text" className="form-control" placeholder="Enter URL" onChange={(e)=>handleInput1(e)} aria-label="Recipient's username" aria-describedby="basic-addon2"/>
-            <button type="button" className="btn btn-primary" onClick={encryptHandler}>Encrypt URL</button>
-        </div>  
-        {showEncryptedURL ? 
-          <div>
-            <p>{encryptedURL}</p>
-          </div>
-          :null}
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter URL"
+            onChange={(e) => handleInput1(e)}
+            aria-label="Recipient's username"
+            aria-describedby="basic-addon2"
+          />
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={encryptHandler}
+          >
+            Encrypt URL
+          </button>
+        </div>
+        <div className={styles.output}>
+          <p>{encryptedURL}</p>
+        </div>
         <div className="input-group input-group-lg">
-            <input type="text" className="form-control" placeholder="Enter encrypted URL" onChange={(e)=>handleInput2(e)} aria-label="Recipient's username" aria-describedby="basic-addon2"/>
-            <button type="button" className="btn btn-primary" onClick={decryptHandler}>Decrypt URL</button>
-        </div>  
-        {showDecryptedURL ? 
-          <div> 
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter encrypted URL"
+            onChange={(e) => handleInput2(e)}
+            aria-label="Recipient's username"
+            aria-describedby="basic-addon2"
+          />
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={decryptHandler}
+          >
+            Decrypt URL
+          </button>
+        </div>
+        {isInvalid ? (
+          <div className="alert alert-warning" role="alert">
+            Given Encrypted URL is not valid
+          </div>
+        ) : (
+          <div className={styles.output}>
             <p>{decryptedURL}</p>
           </div>
-          :null
-        }      
-      </main>        
+        )}
+      </main>
     </div>
-  )
-}
+  );
+};
 
 export default Home;

@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  padding: 10rem 10rem;
+  padding: 10rem 20rem;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -14,4 +14,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.output {
+  margin: 40px;
+  font-size: 1.5em;
+}
+
+.input-group {
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
